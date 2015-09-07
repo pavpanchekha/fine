@@ -49,35 +49,37 @@
     Print = {":id",[fst,snd,":then"],":test",":void",[fst,snd,":pair"],":fst",":snd",[fst,snd,":cond"],":lft",":rgt",[,":builtin"]}
   </pre>
 
-  <p>Here are all possible values:</p>
+  <p>Fine is a programming language—a programming language for manipulating <i>structured data</i>. Every piece of data in Fine is a primitive, or it is structured. Structured data can be “left”, “right”, or “both”, which in other programming languages would be called binary sums and products.</p>
+
+  <p>Here are what the possible values look like, where <code>X</code> is a primitive:</p>
 
   <pre>X</pre>
   <pre>[X,Y]</pre>
   <pre>X lft</pre>
   <pre>X rgt</pre>
 
-  <p>Those brackets are called “pair”.</p>
+  <p>Those brackets are called “pair”. Note that in Fine we don't really write down data, we write down computations. On the left of the <code>⇒</code> you see computations and on the right you see what those computations produce when run on a primitive.</p>
 
-  <p>Now for some computations:</p>
+  <p>There are some more primitives that manipulate values:</p>
 
   <pre>[A,B] fst</pre>
   <pre>[A,B] snd</pre>
   <pre>lft {A,B}</pre>
   <pre>rgt {A,B}</pre>
 
-  <p>These braces are called “cond”.</p>
+  <p>These braces are called “cond”, and they're used for doing different things depending on whether a value is left or right.</p>
 
-  <p><code>test</code> is really handy:</p>
+  <p><code>test</code> is another handy primitive for combining values:</p>
 
   <pre>[A lft,B] test</pre>
   <pre>[A rgt,B] test</pre>
 
-  <p>You can define capital letters just by giving both sides of an equality; then you can use them as lowercase letters.</p>
+  <p>To help you write big programs, you can define commands. Use capital letters on the left hand side of an equality, and you can use the lowercase version later on.</p>
 
   <pre>X = lft rgt</pre>
   <pre>X x</pre>
 
-  <p>Numbers are a built-in:</p>
+  <p>Numbers are a built-in primitive (as are strings):</p>
 
   <pre>5</pre>
   <pre>[5,5] +</pre>
@@ -85,16 +87,16 @@
   <pre>Double = [,] +</pre>
   <pre>5 double</pre>
 
-  <p>More interesting than working with numbers is working with code, another built-in:</p>
+  <p>More interesting than working with numbers is working with code, another built-in. Unlike numbers and strings, though, code is structured. You can create the <code>fst</code> instruction using the command <code>:fst</code>, and analogous for the other instructions:</p>
 
-  <pre>:fst :code</pre>
-  <pre>[[:id,:id] :pair,0 :builtin] :then :code</pre>
-
-  <p><code>:code</code> doesn't change the value, it just marks it as code, which makes it print as code, which is written with double quotes. Leave it off, and you can see that code is made of pairs, <code>fst</code>s, and <code>snd</code>s.</p>
-
+  <pre>:fst</pre>
   <pre>[[:id,:id] :pair,0 :builtin] :then</pre>
+  <pre>:id {"is left","is right"}</pre>
+  <pre>:test {lft,rgt}</pre>
 
-  <p>Another way to build code is to use <code>:lookup</code>:</p>
+  <p>The last line shows that <code>test</code> is represented by the data <code>rgt rgt lft</code>. Fine prints code differently (in quotes), but that's just to help you read it. It's really structured data all the way down.</p>
+
+  <p>Another way to get code objects is to use <code>:lookup</code>:</p>
 
   <pre>"double" :lookup</pre>
 
