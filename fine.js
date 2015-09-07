@@ -435,12 +435,12 @@ function insert_p(evt) {
     clear_hover(evt);
     evt.stopPropagation();
     var ofNum = $elt.id;
-    HISTORY.add("createComment", {of: ofNum}).focus();
+    HISTORY.add("createComment", {of: ofNum}).querySelector("p").focus();
 }
 
 function edit_p(evt) {
     var $p = evt.currentTarget;
-    var pnum = $p.id;
+    var pnum = $p.parentNode.id;
     var content = $p.innerHTML;
     var pcontent = HISTORY.log[pnum].content;
 
@@ -466,7 +466,7 @@ HISTORY = {log: [], time: 0};
 
 HISTORY.handlers = {
     editComment: function(o) {
-        var $p = document.getElementById(o.prev);
+        var $p = document.getElementById(o.prev).querySelector("p");
         if (!$p) console.trace();
         $p.innerHTML = o.content;
         return $p;
@@ -486,7 +486,7 @@ HISTORY.handlers = {
         $del.textContent = "✘";
         $del.classList.add("delete-button");
         $div.appendChild($del);
-        return $p;
+        return $div;
     },
     run: function(o) {
         var $iform = document.getElementById("iform");

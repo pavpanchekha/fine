@@ -10,26 +10,22 @@
   .defined:after { content: " ✓"; color: green }
   .error { color: red; padding-left: 1em;}
   #src {width: calc(100% - 1em); margin: 0; border: 0;
-  border-bottom: 1px dotted #888; color: black}
+  border-top: 1px dotted #888; color: black}
   #iform button {display: none}
 
   code, pre, #src { font-family: "Open Sans", sans; font-size: 12pt; }
-  pre, #src { background: #eee; padding: .5em; overflow: auto}
-  pre { margin-bottom: 1em; }
-  pre + pre { margin-top: -1em; }
-  pre:hover { z-index: 100 }
+  pre, #src { background: #eee; padding: .5em; overflow: auto; margin: 0; }
 
-  pre.ins-top { border-top: 10px solid #008;
-  padding-top: calc(.5em - 5px); margin-top: calc(-1em - 5px); }
-  pre.ins-bot { border-bottom: 10px solid #008;
-  padding-bottom: calc(.5em - 5px);}
-  pre.ins-bot + pre { 
-  padding-top: calc(.5em - 5px); margin-top: calc(-1em); }
+  pre.ins-top { border-top: 10px solid white; }
+  pre.ins-bot { border-bottom: 10px solid white; }
   pre.ins-top, pre.ins-bot { cursor: pointer }
+  pre:hover { z-index: 100 }
 
   p[contentEditable=true] { outline: none; min-height: 19px; }
 
   pre, .comment { position: relative; }
+  .comment p { margin: 0; }
+  .comment { padding: .5em; }
   .delete-button { display: none; position: absolute; right: .25em; top: calc(.5em); height: 1em; cursor: pointer; }
   .ins-top .delete-button { top: calc(.5em - 5px); }
   :hover > .delete-button { display: block; }
