@@ -1,0 +1,149 @@
+<!doctype html>
+<meta charset="utf8"/>
+<title>Fine Playground</title>
+<style>
+  body { max-width: 35em; margin: 2em auto; padding: 0 1em;}
+
+  #prelude { display: none }
+  .results { color: #888 }
+  .results:before { content: " ⇒ " }
+  .defined:after { content: " ✓"; color: green }
+  .error { color: red; padding-left: 1em;}
+  #src {width: calc(100% - 1em); margin: 0; border: 0;
+  border-bottom: 1px dotted #888; color: black}
+  #iform button {display: none}
+
+  code, pre, #src { font-family: "Open Sans", sans; font-size: 12pt; }
+  pre, #src { background: #eee; padding: .5em; overflow: auto}
+  pre { margin-bottom: 1em; }
+  pre + pre { margin-top: -1em; }
+  pre:hover { z-index: 100 }
+
+  pre.ins-top { border-top: 10px solid #008;
+  padding-top: calc(.5em - 5px); margin-top: calc(-1em - 5px); }
+  pre.ins-bot { border-bottom: 10px solid #008;
+  padding-bottom: calc(.5em - 5px);}
+  pre.ins-bot + pre { 
+  padding-top: calc(.5em - 5px); margin-top: calc(-1em); }
+  pre.ins-top, pre.ins-bot { cursor: pointer }
+
+  p[contentEditable=true] { outline: none; min-height: 19px; }
+
+  pre, .container { position: relative; }
+  .delete-button { display: none; position: absolute; right: .25em; top: calc(.5em); height: 1em; cursor: pointer; }
+  .ins-top .delete-button { top: calc(.5em - 5px); }
+  :hover > .delete-button { display: block; }
+  .delete-button:hover { color: #800; }
+</style>
+<body>
+
+  <pre id=prelude>
+    :Id = lft :code
+    :Then = lft rgt :code
+    :Test = lft rgt rgt :code
+    :Void = lft rgt rgt rgt :code
+    :Pair = lft rgt rgt rgt rgt :code
+    :Fst = lft rgt rgt rgt rgt rgt :code
+    :Snd = lft rgt rgt rgt rgt rgt rgt :code
+    :Cond = lft rgt rgt rgt rgt rgt rgt rgt :code
+    :Lft = lft rgt rgt rgt rgt rgt rgt rgt rgt :code
+    :Rgt = lft rgt rgt rgt rgt rgt rgt rgt rgt rgt :code
+    :Builtin = lft rgt rgt rgt rgt rgt rgt rgt rgt rgt rgt :code
+
+    Print = {":id",[fst,snd,":then"],":test",":void",[fst,snd,":pair"],":fst",":snd",[fst,snd,":cond"],":lft",":rgt",[,":builtin"]}
+  </pre>
+
+  <p>Here are all possible values:</p>
+
+  <pre>X</pre>
+  <pre>[X,Y]</pre>
+  <pre>X lft</pre>
+  <pre>X rgt</pre>
+
+  <p>Those brackets are called “pair”.</p>
+
+  <p>Now for some computations:</p>
+
+  <pre>[A,B] fst</pre>
+  <pre>[A,B] snd</pre>
+  <pre>lft {A,B}</pre>
+  <pre>rgt {A,B}</pre>
+
+  <p>These braces are called “cond”.</p>
+
+  <p><code>test</code> is really handy:</p>
+
+  <pre>[A lft,B] test</pre>
+  <pre>[A rgt,B] test</pre>
+
+  <p>You can define capital letters just by giving both sides of an equality; then you can use them as lowercase letters.</p>
+
+  <pre>X = lft rgt</pre>
+  <pre>X x</pre>
+
+  <p>Numbers are a built-in:</p>
+
+  <pre>5</pre>
+  <pre>[5,5] +</pre>
+  <pre>5 [,] +</pre>
+  <pre>Double = [,] +</pre>
+  <pre>5 double</pre>
+
+  <p>More interesting than working with numbers is working with code, another built-in:</p>
+
+  <pre>:fst :code</pre>
+  <pre>[[:id,:id] :pair,0 :builtin] :then :code</pre>
+
+  <p><code>:code</code> doesn't change the value, it just marks it as code, which makes it print as code, which is written with double quotes. Leave it off, and you can see that code is made of pairs, <code>fst</code>s, and <code>snd</code>s.</p>
+
+  <pre>[[:id,:id] :pair,0 :builtin] :then</pre>
+
+  <p>Another way to build code is to use <code>:lookup</code>:</p>
+
+  <pre>"double" :lookup</pre>
+
+  <p>When you have some code, you run it by using the parentheses (pronounced “quote”). The code on the right is run and replaced by its result:</p>
+
+  <pre>5 (,"double" :lookup)</pre>
+
+  <p>A useful primitive is <code>quote</code>, which turns code into code that evaluates to that code. Woah!</p>
+
+  <pre>5 quote</pre>
+  <pre>5 lft quote</pre>
+  <pre>5 lft lft quote</pre>
+
+  <p>Note the quotes: we are creating the code <code>5 lft lft</code>, not the object <code>5 lft lft</code>. Code objects are interpreted and printed with quotes.</p>
+
+  <pre>:id quote</pre>
+  
+  <p>Quotes make quotation even easier. The code on the left is passed to the code on the right:</p>
+
+  <pre>([,] +,quote)</pre>
+  <pre>(double,quote)</pre>
+
+  <p>How does this work?</p>
+
+  <pre>5 (3,double)</pre>
+  <pre>5 (3,(double,quote))</pre>
+
+  <p>Often you use <code>quote</code> and quotations to help create code:</p>
+
+  <pre>If = [[,:id] :pair,(test {snd lft,snd rgt},quote)] :then</pre>
+
+  <p>This definition is a bit confusing. But try it out:</p>
+
+  <pre>A if</pre>
+  <pre>[5,0] (equal,if) {[fst,"=",snd],[fst,"≠",snd]}</pre>
+
+  <p>Another, even more confusing definition is this, which passes code to itself:</p>
+
+  <pre>Self = [[quote,:id] :pair,] :then</pre>
+
+  <form target="" method=get id=iform>
+    <input id=src></input>
+    <button type=submit>Run</button>
+  </form>
+  <div id=err style="color:red"></div>
+</body>
+
+<script src="fine.js"></script>
