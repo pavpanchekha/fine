@@ -560,10 +560,12 @@ function setup() {
     }
 
     var h = JSON.parse(window.localStorage.getItem("history"));
-    if (h) HISTORY.log = h;
-    HISTORY.run();
-    var $src = document.getElementById("src");
-    $src.focus();
+    if (h) {
+        HISTORY.log = h;
+        HISTORY.run();
+        var $src = document.getElementById("src");
+        $src.focus();
+    }
 }
 
 window.addEventListener("load", setup);
