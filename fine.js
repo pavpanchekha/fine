@@ -223,9 +223,12 @@ function parse(tok, i) {
             else throw ("Unexpected '" + tok[i] + "' at token " + i);
             //pieces[pieces.length - 1] = eval(pt(), pieces[pieces.length - 1])
             steps.push(reduce(eval, pieces));
-        } else if (tok[i] === "=") {
-            if (steps.length == 1 && !steps[0].x && !steps[0].y && steps[0].name) {
-                lhs = steps[0];
+        } else if (tok[i][tok[i].length - 1] === ":") {
+            if (i === 0) {
+                lhs = pt()
+                lhs.name = tok[i].substring(0, tok[i].length - 1);
+            } else {
+                throw ("Bad place for defining " + tok[i]);
             }
             steps = []
             i++;
@@ -363,7 +366,7 @@ function html_run(src) {
             throw ("Unexpected '" + toks[parse_result.i] + "' at token " + i);
         }
         if (parse_result.x) {
-            ENVIRONMENT[parse_result.x.name.toLowerCase()] = parse_result.y;
+            ENVIRONMENT[parse_result.x.name] = parse_result.y;
             $res.classList.add("defined");
         } else {
             var out = eval(pt(), parse_result.y);

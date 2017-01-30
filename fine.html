@@ -34,57 +34,85 @@
 <body>
 
   <pre id=prelude>
-    :Id = lft :code
-    :Then = lft rgt :code
-    :Test = lft rgt rgt :code
-    :Void = lft rgt rgt rgt :code
-    :Pair = lft rgt rgt rgt rgt :code
-    :Fst = lft rgt rgt rgt rgt rgt :code
-    :Snd = lft rgt rgt rgt rgt rgt rgt :code
-    :Cond = lft rgt rgt rgt rgt rgt rgt rgt :code
-    :Lft = lft rgt rgt rgt rgt rgt rgt rgt rgt :code
-    :Rgt = lft rgt rgt rgt rgt rgt rgt rgt rgt rgt :code
-    :Builtin = lft rgt rgt rgt rgt rgt rgt rgt rgt rgt rgt :code
+    :id: lft :code
+    :then: lft rgt :code
+    :test: lft rgt rgt :code
+    :void: lft rgt rgt rgt :code
+    :pair: lft rgt rgt rgt rgt :code
+    :fst: lft rgt rgt rgt rgt rgt :code
+    :snd: lft rgt rgt rgt rgt rgt rgt :code
+    :cond: lft rgt rgt rgt rgt rgt rgt rgt :code
+    :lft: lft rgt rgt rgt rgt rgt rgt rgt rgt :code
+    :rgt: lft rgt rgt rgt rgt rgt rgt rgt rgt rgt :code
+    :builtin: lft rgt rgt rgt rgt rgt rgt rgt rgt rgt rgt :code
 
-    Print = {":id",[fst,snd,":then"],":test",":void",[fst,snd,":pair"],":fst",":snd",[fst,snd,":cond"],":lft",":rgt",[,":builtin"]}
+    print: {":id",[fst,snd,":then"],":test",":void",[fst,snd,":pair"],":fst",":snd",[fst,snd,":cond"],":lft",":rgt",[,":builtin"]}
   </pre>
 
-  <p>Fine is a programming language—a programming language for manipulating <i>structured data</i>. Every piece of data in Fine is a primitive, or it is structured. Structured data can be “left”, “right”, or “both”, which in other programming languages would be called binary sums and products.</p>
+  <p>Fine is a programming language—a programming language for manipulating <i>structured data</i>. What Fine means by <i>structured data</i> is a little weird, though. Every piece of data in Fine can have a left and a right. Structured data which has both a left and a right is called “complex”, and data which has neither is called “primitive”. In other programming languages, a complex value would be called a pair, while left-only and right-only values would be the constructors of an “Either” type.</p>
 
-  <p>Here are what the possible values look like, where <code>X</code> is a primitive:</p>
+  <p>Every program in Fine represents a function which takes in a single input and produces a single output. To write these functions, you write a sequence of commands that are evaluated left to right. Commands are usually a single word.</p>
+
+  <p>Let's start with what structured data looks like. Since in Fine we write programs, not data, we cannot write down data directly. Instead, we will write programs that ignore their input and produce some fixed data as output.</p>
+
+  <p>An upper-case word like <code>X</code> is a command that ignores its input and returns that word as output:</p>
 
   <pre>X</pre>
-  <pre>[X,Y]</pre>
+
+  <p>Since in Fine we don't really write down data, you should see the command <code>X</code>, then an arrow <code>⇒</code>, and then that command's output <code>X</code>. (If you don't see that, please enable JavaScript!) Right now this is silly, but will be useful once we start writing more complicated programs.</p>
+
+  <p>The <code>lft</code> (and <code>rgt</code>) command creates a new value whose left (or right) is the input:</p>
+
   <pre>X lft</pre>
   <pre>X rgt</pre>
 
-  <p>Those brackets are called “pair”. Note that in Fine we don't really write down data, we write down computations. On the left of the <code>⇒</code> you see computations and on the right you see what those computations produce when run on a primitive.</p>
+  <p>It's worth digesting the <code>X lft</code> program briefly. It is a program with two commands. The first, <code>X</code>, ignores the input and produces the output <code>X</code>, as we saw above. The second, <code>lft</code>, takes that <code>X</code> and makes it the left of its output.</code>
 
-  <p>There are some more primitives that manipulate values:</p>
+  <p>The final result is a value with a left, <code>X</code>, but no right. This output happens to be printed <code>X lft</code>. This is usually convenient, though later we will see that the same data could be printed in different ways.</p>
+
+  <p>Finally, you can create a value with both a left and a right using brackets:</p>
+
+  <pre>[X,Y]</pre>
+
+  <p>Those brackets are called “pair”. The brackets combine two commands. Both are run on the input, and their results are made the left and right of the output.</p>
+
+  <p>You can extract the left (or right) of an input using <code>fst</code> (<code>snd</code>):</p>
 
   <pre>[A,B] fst</pre>
   <pre>[A,B] snd</pre>
+
+  <p>You can also do different things depending on whether a value has a left or a right:</p>
+
   <pre>lft {A,B}</pre>
   <pre>rgt {A,B}</pre>
 
-  <p>These braces are called “cond”, and they're used for doing different things depending on whether a value is left or right.</p>
+  <p>These braces are called “cond”. The combine two commands: if the value has a left, the first is run, while if it has a right, the second is run.</p>
 
-  <p><code>test</code> is another handy primitive for combining values:</p>
+  <p><code>test</code> is handy primitive:</p>
 
   <pre>[A lft,B] test</pre>
   <pre>[A rgt,B] test</pre>
 
-  <p>To help you write big programs, you can define commands. Use capital letters on the left hand side of an equality, and you can use the lowercase version later on.</p>
+  <p><code>test</code> lets you write if-then patterned code:</p>
 
-  <pre>X = lft rgt</pre>
-  <pre>X x</pre>
+  <pre>[1,2] [equal,] test</pre>
+
+  <p>In this program, the first pair of brackets replaces the input with the pair <code>[1,2]</code>. The second pair of brackets produces a pair whose first element tells us whether 1 and 2 are equal, and whose second element is the pair <code>[1,2]</code>. Finally, the <code>test</code> switches that, producing a left-only value if the two are equal, and a right-only value if they are different. See if you can trace why the final value is <code>[2,[1, 2]] rgt</code>. You may need to play around with the <code>equal</code> function.</p>
+
+  <p>To help you write big programs, you can define helper functions. You do this by <i>naming</i> code, which means prefixing it with a name followed by a colon:</p>
+
+  <pre>foo: lft rgt</pre>
+
+  <p>The check mark means the definition succeeded. The code is not run, since it only defines a helper function. Once defined, the function can be used.</p>
+
+  <pre>X foo</pre>
 
   <p>Numbers are a built-in primitive (as are strings):</p>
 
   <pre>5</pre>
   <pre>[5,5] +</pre>
   <pre>5 [,] +</pre>
-  <pre>Double = [,] +</pre>
+  <pre>double: [,] +</pre>
   <pre>5 double</pre>
 
   <p>More interesting than working with numbers is working with code, another built-in. Unlike numbers and strings, though, code is structured. You can create the <code>fst</code> instruction using the command <code>:fst</code>, and analogous for the other instructions:</p>
@@ -104,7 +132,7 @@
 
   <pre>5 (,"double" :lookup)</pre>
 
-  <p>A useful primitive is <code>quote</code>, which turns code into code that evaluates to that code. Woah!</p>
+  <p>A useful primitive is <code>quote</code>, which turns code into code that evaluates to that code. Woah! (The instruction <code>:code</code> just marks data as code without changing its structure, allowing Fine to print it nicely.)</p>
 
   <pre>5 quote</pre>
   <pre>5 lft quote</pre>
@@ -126,7 +154,7 @@
 
   <p>Often you use <code>quote</code> and quotations to help create code:</p>
 
-  <pre>If = [[,:id] :pair,(test {snd lft,snd rgt},quote)] :then</pre>
+  <pre>if: [[,:id] :pair,(test {snd lft,snd rgt},quote)] :then</pre>
 
   <p>This definition is a bit confusing. But try it out:</p>
 
@@ -135,7 +163,7 @@
 
   <p>Another, even more confusing definition is this, which passes code to itself:</p>
 
-  <pre>Self = [[quote,:id] :pair,] :then</pre>
+  <pre>self: [[quote,:id] :pair,] :then</pre>
 
   <form target="" method=get id=iform>
     <input id=src></input>
